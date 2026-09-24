@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WasteWize - Cronograma de Coleta de Lixo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'+],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar & glassmorphism styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .pulse-emerald {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% {
+                transform: scale(0.98);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+            100% {
+                transform: scale(0.98);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-full font-sans antialiased flex flex-col bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-white">
+
+    <!-- Navbar / Header -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-recycle text-white text-2xl animate-spin-slow"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
+                        Eco<span class="text-emerald-400">Agenda</span>
+                    </span>
+                    <p class="text-xs text-slate-400 hidden sm:block">Coleta de Lixo Urbana & Reciclagem</p>
+                </div>
+            </div>
+
+            <!-- Quick Action & Notification Button -->
+            <div class="flex items-center gap-3">
+                <button onclick="openNotificationModal()" class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-200 shadow-lg shadow-emerald-600/30 text-sm active:scale-95">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span class="hidden sm:inline">Receber Alertas</span>
+                </button>
+                <button onclick="toggleDicasModal()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all text-sm border border-slate-700/50">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero & Search Section -->
+    <section class="relative py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        <!-- Background Decorative Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="text-center max-w-3xl mx-auto mb-8">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-4">
+                <i class="fa-solid fa-location-dot"></i> Atualizado em tempo real para sua cidade
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Descubra os dias e horários da <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">coleta na sua rua</span>
+            </h1>
+            <p class="mt-3 text-base sm:text-lg text-slate-400">
+                Evite sujeira e ajude o meio ambiente. Selecione seu bairro abaixo e acompanhe a rota do caminhão.
+            </p>
+        </div>
+
+        <!-- Search / Filter Box -->
+        <div class="glass-panel p-4 sm:p-6 rounded-3xl max-w-4xl mx-auto shadow-2xl shadow-black/50 border border-slate-800">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                
+                <!-- Dropdown de Bairros -->
+                <div class="md:col-span-6 relative">
+                    <label class="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Selecione seu Bairro</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-city absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <select id="neighborhoodSelect" onchange="changeNeighborhood()" class="w-full pl-11 pr-10 py-3.5 bg-slate-900/90 border border-slate-700/80 rounded-2xl text-white font-medium focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all appearance-none cursor-pointer">
+                            <!-- Options populated via JS -->
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
+                    </div>
+                </div>
+
+                <!-- Input de Busca Rápida por Rua -->
+                <div class="md:col-span-6 relative">
+                    <label class="block text-xs font-medium text-slate-400 mb-1.5 ml-1">Buscar por Nome de Rua</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="streetInput" oninput="filterByStreet()" placeholder="Ex: Av. Brasil, Rua das Flores..." class="w-full pl-11 pr-4 py-3.5 bg-slate-900/90 border border-slate-700/80 rounded-2xl text-white font-medium placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Categories Tabs -->
+            <div class="mt-6 pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Filtrar Coleta:</span>
+                <div class="flex flex-wrap gap-2" id="filterContainer">
+                    <button onclick="setCategoryFilter('all')" data-filter="all" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-md shadow-emerald-500/20">
+                        <i class="fa-solid fa-layer-group mr-1.5"></i> Todos os Tipos
+                    </button>
+                    <button onclick="setCategoryFilter('comum')" data-filter="comum" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/50">
+                        <i class="fa-solid fa-trash-can text-amber-400 mr-1.5"></i> Lixo Comum
+                    </button>
+                    <button onclick="setCategoryFilter('reciclavel')" data-filter="reciclavel" class="filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/50">
+                        <i class="fa-solid fa-leaf text-emerald-400 mr-1.5"></i> Coleta Seletiva
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Truck Tracker Status Bar -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mb-8">
+        <div id="truckTrackerCard" class="glass-panel rounded-3xl p-6 border border-emerald-500/30 relative overflow-hidden">
+            <!-- Live Badge -->
+            <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-3 w-3 relative">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </span>
+                    <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                        Rastreamento do Caminhão ao Vivo
+                    </h3>
+                </div>
+                <div class="text-xs bg-slate-800/80 text-emerald-400 font-mono px-3 py-1.5 rounded-lg border border-emerald-500/20" id="etaTimeDisplay">
+                    ETA estimado: 25 min
+                </div>
+            </div>
+
+            <!-- Canvas / Animated Truck Map -->
+            <div class="relative bg-slate-900/90 rounded-2xl p-4 border border-slate-800 overflow-hidden">
+                <div class="flex items-center justify-between mb-2 text-xs text-slate-400 font-medium">
+                    <span id="startPointText"><i class="fa-solid fa-warehouse mr-1"></i> Central de Coleta</span>
+                    <span id="currentLocText" class="text-emerald-400 font-semibold"><i class="fa-solid fa-truck-pickup mr-1"></i> Caminhão em movimento</span>
+                    <span id="endPointText"><i class="fa-solid fa-house-user mr-1"></i> Sua Rua (Bairro)</span>
+                </div>
+
+                <!-- Progress Tracker Bar -->
+                <div class="relative w-full bg-slate-800 h-4 rounded-full overflow-hidden my-3">
+                    <div id="truckProgressBar" class="h-full bg-gradient-to-r from-emerald-600 via-teal-400 to-emerald-300 w-2/3 transition-all duration-700 rounded-full relative">
+                        <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-400 pt-1">
+                    <span id="truckDistanceInfo"><i class="fa-solid fa-route text-emerald-400 mr-1"></i> Distância aproximada: <strong>1.8 km</strong> de você</span>
+                    <span class="text-emerald-400 font-medium flex items-center gap-1">
+                        <i class="fa-solid fa-circle-check text-emerald-500"></i> Rota Ativa
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weekly Schedule Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow mb-12">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                    <i class="fa-regular fa-calendar-days text-emerald-400"></i>
+                    Cronograma Semanal - <span id="selectedNeighborhoodTitle" class="text-emerald-400">Centro</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1" id="streetMatchNote">Mostrando horários válidos para a região selecionada.</p>
+            </div>
+            <button onclick="window.print()" class="hidden md:flex items-center gap-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-2 rounded-xl border border-slate-700/60 transition-all">
+                <i class="fa-solid fa-print"></i> Imprimir Guia
+            </button>
+        </div>
+
+        <!-- Schedule Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="scheduleGrid">
+            <!-- Dynamic cards generated via JavaScript -->
+        </div>
+
+        <!-- Empty State (Fallback) -->
+        <div id="emptyState" class="hidden glass-panel rounded-3xl p-12 text-center max-w-lg mx-auto my-8">
+            <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-500 text-2xl">
+                <i class="fa-solid fa-magnifying-glass font-bold"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">Nenhum horário encontrado</h3>
+            <p class="text-sm text-slate-400 mb-6">Não encontramos resultados com o filtro aplicado para este bairro ou rua.</p>
+            <button onclick="resetFilters()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-600/30">
+                Redefinir Filtros
+            </button>
+        </div>
+    </main>
+
+    <!-- Educational Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mb-16">
+        <div class="glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <div>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-recycle text-emerald-400"></i> Como descartar corretamente?
+                    </h3>
+                    <p class="text-xs text-slate-400 mt-1">Dicas rápidas para ajudar a manter a cidade limpa e facilitar a reciclagem</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm mb-1">Lixo Comum</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">Restos de alimentos, papéis engordurados, fraldas e lixo do banheiro. Embale bem em sacos resistentes.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm mb-1">Papel e Papelão</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">Caixas dobradas, jornais e revistas. Mantenha secos e limpos para não comprometer a reciclagem.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-bottle-water"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm mb-1">Plásticos e Metais</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">Garrafas PET, latinhas e embalagens. Lave levemente para tirar o excesso e resíduos líquidos.</p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="glass-card p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition-all hover:-translate-y-1">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-wine-bottle"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm mb-1">Vidros e Perfurocortantes</h4>
+                    <p class="text-xs text-slate-400 leading-relaxed">Garrafas e cacos. **Atenção:** Embale em caixas de leite ou papelão para proteger os coletores.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-recycle text-emerald-400 text-sm"></i>
+                <span>EcoAgenda &copy; 2026 - Projeto Cidade Limpa e Sustentável</span>
+            </div>
+            <div class="flex items-center gap-6 text-slate-400">
+                <a href="#" onclick="alert('Central de Dúvidas: Ligue 156 para atendimento municipal.'); return false;" class="hover:text-emerald-400 transition-colors">Dúvidas (Ligue 156)</a>
+                <a href="#" onclick="toggleDicasModal(); return false;" class="hover:text-emerald-400 transition-colors">Guia de Reciclagem</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Signup Modal -->
+    <div id="notificationModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full border border-slate-800 shadow-2xl relative transform scale-95 transition-all duration-300" id="notificationModalBox">
+            <button onclick="closeNotificationModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-xl text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-4">
+                <i class="fa-brands fa-whatsapp"></i>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-2">Receba Lembretes pelo WhatsApp</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-6">
+                Cadastre seu número e seja avisado 1 hora antes do caminhão do lixo passar no seu bairro.
+            </p>
+
+            <form id="notifyForm" onsubmit="handleNotifySubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Seu Nome</label>
+                    <input type="text" required placeholder="Ex: Maria Silva" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Número do WhatsApp</label>
+                    <input type="tel" required placeholder="(11) 99999-9999" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Bairro Preferencial</label>
+                    <select id="modalNeighborhoodSelect" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/30 text-sm mt-2">
+                    <i class="fa-solid fa-bell mr-2"></i> Ativar Avisos Gratuitos
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Tips / Dicas Modal -->
+    <div id="dicasModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="glass-panel bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-slate-800 shadow-2xl relative transform scale-95 transition-all duration-300" id="dicasModalBox">
+            <button onclick="toggleDicasModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white p-2 rounded-xl text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-lightbulb"></i>
+            </div>
+
+            <h3 class="text-xl font-bold text-white mb-3">Dicas Importantes para o Dia da Coleta</h3>
+
+            <ul class="space-y-3 text-xs text-slate-300 mb-6">
+                <li class="flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                    <span><strong>Coloque o lixo no horário:</strong> Disponibilize as lixeiras até 1 hora antes do horário estipulado.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                    <span><strong>Mantenha em local alto:</strong> Evite colocar sacos diretamente no chão para prevenir que animais rasguem.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <i class="fa-solid fa-circle-check text-emerald-400 mt-0.5"></i>
+                    <span><strong>Cuidado com Perfurocortantes:</strong> Agulhas, vidros quebrados e latas abertas devem ser colocados em garrafas PET ou caixas rígidas.</span>
+                </li>
+            </ul>
+
+            <button onclick="toggleDicasModal()" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs transition-all border border-slate-700">
+                Entendido, obrigado!
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Data Base Mock: Bairros e Ruas com Cronogramas
+        const MOCK_DATA = [
+            {
+                id: 'centro',
+                name: 'Centro',
+                streets: ['Av. Brasil', 'Rua 15 de Novembro', 'Rua Barão do Rio Branco', 'Praça Central'],
+                etaMinutes: 15,
+                truckDistance: '0.9 km',
+                truckProgress: 85,
+                schedules: [
+                    { day: 'Segunda-feira', type: 'comum', time: '07:00 - Manhã', period: 'Manhã', status: 'Em breve' },
+                    { day: 'Segunda-feira', type: 'reciclavel', time: '14:00 - Tarde', period: 'Tarde', status: 'Hoje' },
+                    { day: 'Terça-feira', type: 'comum', time: '07:00 - Manhã', period: 'Manhã', status: 'Amanhã' },
+                    { day: 'Quarta-feira', type: 'comum', time: '07:00 - Manhã', period: 'Manhã', status: 'Em 2 dias' },
+                    { day: 'Quarta-feira', type: 'reciclavel', time: '14:00 - Tarde', period: 'Tarde', status: 'Em 2 dias' },
+                    { day: 'Quinta-feira', type: 'comum', time: '07:00 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sexta-feira', type: 'comum', time: '07:00 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sexta-feira', type: 'reciclavel', time: '14:00 - Tarde', period: 'Tarde', status: 'Programado' },
+                    { day: 'Sábado', type: 'comum', time: '08:00 - Manhã', period: 'Manhã', status: 'Programado' }
+                ]
+            },
+            {
+                id: 'vila-nova',
+                name: 'Vila Nova',
+                streets: ['Rua das Palmeiras', 'Av. Independência', 'Rua São Paulo', 'Alameda dos Anjos'],
+                etaMinutes: 35,
+                truckDistance: '2.4 km',
+                truckProgress: 45,
+                schedules: [
+                    { day: 'Segunda-feira', type: 'comum', time: '19:30 - Noite', period: 'Noite', status: 'Hoje' },
+                    { day: 'Quarta-feira', type: 'comum', time: '19:30 - Noite', period: 'Noite', status: 'Em 2 dias' },
+                    { day: 'Quinta-feira', type: 'reciclavel', time: '09:00 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sexta-feira', type: 'comum', time: '19:30 - Noite', period: 'Noite', status: 'Programado' }
+                ]
+            },
+            {
+                id: 'jardim-america',
+                name: 'Jardim América',
+                streets: ['Av. dos Estados', 'Rua Colombia', 'Rua Argentina', 'Rua México'],
+                etaMinutes: 50,
+                truckDistance: '4.1 km',
+                truckProgress: 20,
+                schedules: [
+                    { day: 'Terça-feira', type: 'comum', time: '08:00 - Manhã', period: 'Manhã', status: 'Amanhã' },
+                    { day: 'Terça-feira', type: 'reciclavel', time: '13:30 - Tarde', period: 'Tarde', status: 'Amanhã' },
+                    { day: 'Quinta-feira', type: 'comum', time: '08:00 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sábado', type: 'comum', time: '08:00 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sábado', type: 'reciclavel', time: '13:30 - Tarde', period: 'Tarde', status: 'Programado' }
+                ]
+            },
+            {
+                id: 'bela-vista',
+                name: 'Bela Vista',
+                streets: ['Rua do Horizonte', 'Av. Panorama', 'Rua das Acácias'],
+                etaMinutes: 10,
+                truckDistance: '0.5 km',
+                truckProgress: 90,
+                schedules: [
+                    { day: 'Segunda-feira', type: 'comum', time: '07:30 - Manhã', period: 'Manhã', status: 'Agora' },
+                    { day: 'Quarta-feira', type: 'comum', time: '07:30 - Manhã', period: 'Manhã', status: 'Em 2 dias' },
+                    { day: 'Sexta-feira', type: 'comum', time: '07:30 - Manhã', period: 'Manhã', status: 'Programado' },
+                    { day: 'Sexta-feira', type: 'reciclavel', time: '11:00 - Manhã', period: 'Manhã', status: 'Programado' }
+                ]
+            },
+            {
+                id: 'parque-flores',
+                name: 'Parque das Flores',
+                streets: ['Rua das Orquídeas', 'Rua dos Lírios', 'Av. Primavera'],
+                etaMinutes: 65,
+                truckDistance: '5.2 km',
+                truckProgress: 15,
+                schedules: [
+                    { day: 'Terça-feira', type: 'comum', time: '18:00 - Noite', period: 'Noite', status: 'Amanhã' },
+                    { day: 'Quinta-feira', type: 'comum', time: '18:00 - Noite', period: 'Noite', status: 'Programado' },
+                    { day: 'Quinta-feira', type: 'reciclavel', time: '15:00 - Tarde', period: 'Tarde', status: 'Programado' },
+                    { day: 'Sábado', type: 'comum', time: '18:00 - Noite', period: 'Noite', status: 'Programado' }
+                ]
+            }
+        ];
+
+        // State Variables
+        let currentNeighborhood = MOCK_DATA[0];
+        let currentFilter = 'all';
+        let streetSearchQuery = '';
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            populateNeighborhoodSelects();
+            renderSchedule();
+            updateTruckTracker();
+        });
+
+        // Populate Neighborhood Dropdowns
+        function populateNeighborhoodSelects() {
+            const selectHeader = document.getElementById('neighborhoodSelect');
+            const selectModal = document.getElementById('modalNeighborhoodSelect');
+
+            selectHeader.innerHTML = '';
+            selectModal.innerHTML = '';
+
+            MOCK_DATA.forEach(n => {
+                const opt1 = document.createElement('option');
+                opt1.value = n.id;
+                opt1.textContent = n.name;
+                selectHeader.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = n.id;
+                opt2.textContent = n.name;
+                selectModal.appendChild(opt2);
+            });
+        }
+
+        // Change Selected Neighborhood
+        function changeNeighborhood() {
+            const select = document.getElementById('neighborhoodSelect');
+            const selectedId = select.value;
+            currentNeighborhood = MOCK_DATA.find(n => n.id === selectedId) || MOCK_DATA[0];
+
+            // Reset street query
+            document.getElementById('streetInput').value = '';
+            streetSearchQuery = '';
+
+            document.getElementById('selectedNeighborhoodTitle').textContent = currentNeighborhood.name;
+            renderSchedule();
+            updateTruckTracker();
+        }
+
+        // Filter by street query
+        function filterByStreet() {
+            const input = document.getElementById('streetInput');
+            streetSearchQuery = input.value.toLowerCase().trim();
+
+            if (streetSearchQuery.length > 0) {
+                // Try to find if user typed a street matching another neighborhood
+                const matchedNeighborhood = MOCK_DATA.find(n => 
+                    n.streets.some(s => s.toLowerCase().includes(streetSearchQuery))
+                );
+
+                if (matchedNeighborhood && matchedNeighborhood.id !== currentNeighborhood.id) {
+                    currentNeighborhood = matchedNeighborhood;
+                    document.getElementById('neighborhoodSelect').value = matchedNeighborhood.id;
+                    document.getElementById('selectedNeighborhoodTitle').textContent = matchedNeighborhood.name;
+                    updateTruckTracker();
+                }
+            }
+
+            renderSchedule();
+        }
+
+        // Set Category Filter
+        function setCategoryFilter(filter) {
+            currentFilter = filter;
+
+            // Update active state on filter buttons
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                const btnFilter = btn.getAttribute('data-filter');
+                if (btnFilter === filter) {
+                    btn.className = "filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-emerald-500 text-white shadow-md shadow-emerald-500/20";
+                } else {
+                    btn.className = "filter-btn px-4 py-2 rounded-xl text-xs font-bold transition-all bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700/50";
+                }
+            });
+
+            renderSchedule();
+        }
+
+        // Render Schedule Cards Grid
+        function renderSchedule() {
+            const grid = document.getElementById('scheduleGrid');
+            const emptyState = document.getElementById('emptyState');
+            const streetNote = document.getElementById('streetMatchNote');
+
+            grid.innerHTML = '';
+
+            // Filter logic
+            let filteredSchedules = currentNeighborhood.schedules.filter(item => {
+                if (currentFilter === 'comum' && item.type !== 'comum') return false;
+                if (currentFilter === 'reciclavel' && item.type !== 'reciclavel') return false;
+                return true;
+            });
+
+            // Update street match note
+            if (streetSearchQuery.length > 0) {
+                const matchingStreets = currentNeighborhood.streets.filter(s => s.toLowerCase().includes(streetSearchQuery));
+                if (matchingStreets.length > 0) {
+                    streetNote.textContent = `Resultado para rua: "${matchingStreets[0]}" (${currentNeighborhood.name})`;
+                } else {
+                    streetNote.textContent = `Mostrando horários gerais para o bairro ${currentNeighborhood.name}`;
+                }
+            } else {
+                streetNote.textContent = `Ruas atendidas: ${currentNeighborhood.streets.join(', ')}`;
+            }
+
+            if (filteredSchedules.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                grid.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+            }
+
+            // Create cards
+            filteredSchedules.forEach((sch) => {
+                const isReciclavel = sch.type === 'reciclavel';
+                const card = document.createElement('div');
+                card.className = "glass-panel p-5 rounded-3xl border border-slate-800 hover:border-slate-700 transition-all hover:scale-[1.02] flex flex-col justify-between";
+
+                const badgeBg = isReciclavel ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+                const icon = isReciclavel ? 'fa-leaf' : 'fa-trash-can';
+                const label = isReciclavel ? 'Coleta Seletiva' : 'Lixo Comum';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold px-3 py-1 rounded-full border ${badgeBg} flex items-center gap-1.5">
+                                <i class="fa-solid ${icon}"></i> ${label}
+                            </span>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-800 px-2 py-0.5 rounded-md">
+                                ${sch.status}
+                            </span>
+                        </div>
+
+                        <h4 class="text-lg font-extrabold text-white mb-1">${sch.day}</h4>
+                        <p class="text-xs text-slate-400 flex items-center gap-1.5 mb-4">
+                            <i class="fa-regular fa-clock text-emerald-400"></i> ${sch.time}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Período: <strong class="text-slate-200">${sch.period}</strong></span>
+                        <button onclick="openNotificationModal()" class="text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 hover:underline">
+                            Lembrar <i class="fa-solid fa-bell text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Update Simulated Truck Location Tracker Bar
+        function updateTruckTracker() {
+            const trackerBar = document.getElementById('truckProgressBar');
+            const etaDisplay = document.getElementById('etaTimeDisplay');
+            const distInfo = document.getElementById('truckDistanceInfo');
+            const endText = document.getElementById('endPointText');
+
+            trackerBar.style.width = `${currentNeighborhood.truckProgress}%`;
+            etaDisplay.textContent = `ETA estimado: ${currentNeighborhood.etaMinutes} min`;
+            distInfo.innerHTML = `<i class="fa-solid fa-route text-emerald-400 mr-1"></i> Distância aproximada: <strong>${currentNeighborhood.truckDistance}</strong> do seu bairro`;
+            endText.innerHTML = `<i class="fa-solid fa-house-user mr-1"></i> ${currentNeighborhood.name}`;
+        }
+
+        // Reset Filters Helper
+        function resetFilters() {
+            currentFilter = 'all';
+            streetSearchQuery = '';
+            document.getElementById('streetInput').value = '';
+            setCategoryFilter('all');
+        }
+
+        // Notification Modal Controllers
+        function openNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            const modalBox = document.getElementById('notificationModalBox');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-95');
+            modalBox.classList.add('scale-100');
+        }
+
+        function closeNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            const modalBox = document.getElementById('notificationModalBox');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-95');
+        }
+
+        function handleNotifySubmit(e) {
+            e.preventDefault();
+            closeNotificationModal();
+            
+            // Custom alert message modal replacement
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-6 right-6 z-50 glass-panel border border-emerald-500 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce";
+            toast.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-slate-950 font-bold">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <h5 class="text-sm font-bold">Alerta Ativado com Sucesso!</h5>
+                    <p class="text-xs text-slate-300">Você receberá lembretes via WhatsApp para ${currentNeighborhood.name}.</p>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Dicas Modal Toggle
+        function toggleDicasModal() {
+            const modal = document.getElementById('dicasModal');
+            const modalBox = document.getElementById('dicasModalBox');
+            
+            if (modal.classList.contains('opacity-0')) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                modalBox.classList.remove('scale-95');
+                modalBox.classList.add('scale-100');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modalBox.classList.remove('scale-100');
+                modalBox.classList.add('scale-95');
+            }
+        }
+    </script>
+</body>
+</html>
