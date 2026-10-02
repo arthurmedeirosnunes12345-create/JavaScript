@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "maquina": "Torno CNC",
+    "setor": "Usinagem",
+    "horasUso": 480,
+    "limiteManutencao": 500,
+    "manutencaoRealizada": false
+  },
+  {
+    "id": 2,
+    "maquina": "Prensa Hidráulica",
+    "setor": "Estamparia",
+    "horasUso": 620,
+    "limiteManutencao": 600,
+    "manutencaoRealizada": false
+  },
+  {
+    "id": 3,
+    "maquina": "Fresa Automática",
+    "setor": "Usinagem",
+    "horasUso": 310,
+    "limiteManutencao": 300,
+    "manutencaoRealizada": false
+  },
+  {
+    "id": 4,
+    "maquina": "Compressor de Ar",
+    "setor": "Facilidades",
+    "horasUso": 150,
+    "limiteManutencao": 400,
+    "manutencaoRealizada": false
+  }
+]

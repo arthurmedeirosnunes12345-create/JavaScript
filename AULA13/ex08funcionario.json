@@ -1,0 +1,26 @@
+[
+  {
+    "matricula": "1201",
+    "nome": "Carlos Eduardo",
+    "setor": "Produção",
+    "cargo": "Operador de Máquinas"
+  },
+  {
+    "matricula": "1202",
+    "nome": "Ana Beatriz",
+    "setor": "Manutenção",
+    "cargo": "Técnica Eletrotécnica"
+  },
+  {
+    "matricula": "1203",
+    "nome": "Maria Silva",
+    "setor": "Qualidade",
+    "cargo": "Inspetor"
+  },
+  {
+    "matricula": "1204",
+    "nome": "João Pedro",
+    "setor": "Logística",
+    "cargo": "Almoxarife"
+  }
+]

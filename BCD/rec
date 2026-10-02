@@ -1,0 +1,282 @@
+EXERCÍCIO 01: rec01_producao.js
+JavaScript
+// EXERCÍCIO 01 - Produção diária de embalagens
+
+// Variáveis de quantidade e tempo
+const caixasPorHora = 75;
+const horasTrabalhadas = 8;
+
+// Cálculo da produção total
+const producaoTotal = caixasPorHora * horasTrabalhadas;
+
+// Exibição do resultado no terminal
+console.log(`--- RELATÓRIO DE PRODUÇÃO ---`);
+console.log(`Caixas produzidas por hora: ${caixasPorHora}`);
+console.log(`Horas trabalhadas no dia: ${horasTrabalhadas} horas`);
+console.log(`Total produzido no dia: ${producaoTotal} caixas`);
+EXERCÍCIO 02: rec02_materiais.js
+JavaScript
+// EXERCÍCIO 02 - Custo de materiais para manutenção
+const entrada = require("readline-sync");
+
+console.log("=== CÁLCULO DE CUSTO DE MATERIAIS ===");
+
+// Entrada de dados
+const nomePeca = entrada.question("Digite o nome da peca: ");
+const quantidade = entrada.questionInt("Digite a quantidade comprada: ");
+const precoUnitario = entrada.questionFloat("Digite o preco unitario (R$): ");
+
+// Cálculo do total
+const valorTotal = quantidade * precoUnitario;
+
+// Exibição do resumo
+console.log("\n--- RESUMO DA COMPRA ---");
+console.log(`Peça: ${nomePeca}`);
+console.log(`Quantidade: ${quantidade}`);
+console.log(`Preço Unitário: R$ ${precoUnitario.toFixed(2)}`);
+console.log(`Valor Total: R$ ${valorTotal.toFixed(2)}`);
+EXERCÍCIO 03: rec03_oleo.js
+JavaScript
+// EXERCÍCIO 03 - Verificação de nível de óleo
+const entrada = require("readline-sync");
+
+console.log("=== VERIFICAÇÃO DO NÍVEL DE ÓLEO ===");
+
+// Entrada de dados em porcentagem
+const nivelOleo = entrada.questionFloat("Digite o nivel de oleo (%): ");
+
+console.log(`\nNível informado: ${nivelOleo}%`);
+
+// Condição para checar se o nível está entre 40% e 80% (inclusive)
+if (nivelOleo >= 40 && nivelOleo <= 80) {
+  console.log("Status: NÍVEL NORMAL");
+} else {
+  console.log("Status: INSPEÇÃO NECESSÁRIA");
+}
+EXERCÍCIO 04: rec04_vibracao.js
+JavaScript
+// EXERCÍCIO 04 - Classificação de vibração
+const entrada = require("readline-sync");
+
+console.log("=== ANÁLISE DE VIBRAÇÃO DE EQUIPAMENTO ===");
+
+// Entrada do nível de vibração
+const vibracao = entrada.questionFloat("Digite o nivel de vibracao (mm/s): ");
+
+console.log(`\nVibração informada: ${vibracao} mm/s`);
+
+// Regra de negócio para classificação
+if (vibracao <= 3.0) {
+  console.log("Situação: ESTÁVEL");
+} else if (vibracao <= 6.0) {
+  console.log("Situação: ATENÇÃO");
+} else {
+  console.log("Situação: CRÍTICA");
+}
+EXERCÍCIO 05: rec05_ciclos.js
+JavaScript
+// EXERCÍCIO 05 - Projeção de produção por ciclo
+const entrada = require("readline-sync");
+
+console.log("=== PROJEÇÃO DE PRODUÇÃO ACUMULADA ===");
+
+const produtosPorCiclo = entrada.questionInt("Quantos produtos sao produzidos por ciclo? ");
+
+console.log("\n--- PRODUÇÃO ACUMULADA (CICLOS 1 A 12) ---");
+
+// Laço de repetição do ciclo 1 até o 12
+for (let ciclo = 1; ciclo <= 12; ciclo++) {
+  const producaoAcumulada = ciclo * produtosPorCiclo;
+  console.log(`Ciclo ${ciclo}: ${producaoAcumulada} produtos acumulados`);
+}
+EXERCÍCIO 06: rec06_media.js
+JavaScript
+// EXERCÍCIO 06 - Média de tempos de atendimento
+const entrada = require("readline-sync");
+
+console.log("=== REGISTRO DE ATENDIMENTOS TÉCNICOS ===");
+
+let somaTempos = 0;
+const totalAtendimentos = 6;
+
+// Laço para solicitar os 6 tempos
+for (let i = 1; i <= totalAtendimentos; i++) {
+  const tempo = entrada.questionFloat(`Digite o tempo do atendimento ${i} (em minutos): `);
+  somaTempos += tempo; // Acumulador
+}
+
+// Cálculo da média
+const media = somaTempos / totalAtendimentos;
+
+// Saída final
+console.log("\n--- RESULTADO FINAL ---");
+console.log(`Soma de todos os tempos: ${somaTempos.toFixed(2)} minutos`);
+console.log(`Média de tempo por atendimento: ${media.toFixed(2)} minutos`);
+EXERCÍCIO 07: rec07_setores.js
+JavaScript
+// EXERCÍCIO 07 - Lista de setores da fábrica
+const entrada = require("readline-sync");
+
+const setores = []; // Array vazio
+
+console.log("=== CADASTRO DE SETORES ===");
+
+// Laço para cadastrar 6 setores
+for (let i = 1; i <= 6; i++) {
+  const nomeSetor = entrada.question(`Digite o nome do setor ${i}: `);
+  setores.push(nomeSetor);
+}
+
+console.log("\n--- LISTA DE SETORES CADASTRADOS ---");
+
+// Percorrendo o array com auxílio da propriedade length
+for (let index = 0; index < setores.length; index++) {
+  console.log(`${index + 1} - ${setores[index]}`);
+}
+EXERCÍCIO 08: rec08_ferramentas.js
+JavaScript
+// EXERCÍCIO 08 - Controle de ferramentas
+const entrada = require("readline-sync");
+
+const ferramentas = [];
+
+console.log("=== CADASTRO DE FERRAMENTAS DO ALMOXARIFADO ===");
+
+// Laço para cadastrar 4 ferramentas
+for (let i = 1; i <= 4; i++) {
+  console.log(`\nFerramenta #${i}:`);
+  const nome = entrada.question("Nome da ferramenta: ");
+  const quantidade = entrada.questionInt("Quantidade disponivel: ");
+  const minimo = entrada.questionInt("Quantidade minima exigida: ");
+
+  // Criação do objeto e inserção no array
+  const ferramenta = { nome, quantidade, minimo };
+  ferramentas.push(ferramenta);
+}
+
+console.log("\n================ RELATÓRIO DE ESTOQUE ================");
+
+// Percorrendo o array de objetos e aplicando a verificação
+for (let i = 0; i < ferramentas.length; i++) {
+  const item = ferramentas[i];
+  let situacao = "";
+
+  if (item.quantidade < item.minimo) {
+    situacao = "REPOR";
+  } else {
+    situacao = "ESTOQUE SUFICIENTE";
+  }
+
+  console.log(`Ferramenta: ${item.nome} | Disp: ${item.quantidade} | Mín: ${item.minimo} | Situação: ${situacao}`);
+}
+EXERCÍCIO 09: rec09_aproveitamento.js
+JavaScript
+// EXERCÍCIO 09 - Cálculo de aproveitamento de matéria-prima
+const entrada = require("readline-sync");
+
+// Função 1: Calcula o percentual de aproveitamento
+function calcularAproveitamento(util, total) {
+  return (util / total) * 100;
+}
+
+// Função 2: Retorna o nível de classificação
+function classificarAproveitamento(percentual) {
+  if (percentual >= 90) {
+    return "EXCELENTE";
+  } else if (percentual >= 75) {
+    return "ADEQUADO";
+  } else {
+    return "REVISAR PROCESSO";
+  }
+}
+
+console.log("=== ANÁLISE DE APROVEITAMENTO DE MATÉRIA-PRIMA ===");
+
+// Entradas via terminal
+const qteTotal = entrada.questionFloat("Digite a quantidade total de materia-prima: ");
+const qteUtil = entrada.questionFloat("Digite a quantidade util aproveitada: ");
+
+// Chamada das funções
+const percentualObtido = calcularAproveitamento(qteUtil, qteTotal);
+const classificacaoFinal = classificarAproveitamento(percentualObtido);
+
+// Exibição do relatório final
+console.log("\n--- RELATÓRIO FINAL ---");
+console.log(`Quantidade Total: ${qteTotal}`);
+console.log(`Quantidade Útil: ${qteUtil}`);
+console.log(`Aproveitamento: ${percentualObtido.toFixed(2)}%`);
+console.log(`Classificação: ${classificacaoFinal}`);
+EXERCÍCIO 10: Sistema modular de orçamento técnico
+Crie uma pasta chamada rec10_orcamento e adicione os dois arquivos abaixo dentro dela:
+
+1. File: rec10_orcamento/funcoesOrcamento.js
+JavaScript
+// Módulo de regras de negócio do orçamento
+
+function calcularMaoDeObra(horas) {
+  const valorHora = 95.00;
+  return horas * valorHora;
+}
+
+function calcularTotal(valorMateriais, horas) {
+  const valorMaoObra = calcularMaoDeObra(horas);
+  return valorMateriais + valorMaoObra;
+}
+
+function verificarDesconto(total) {
+  if (total >= 1000.00) {
+    return "DESCONTO DE 10%";
+  } else {
+    return "SEM DESCONTO";
+  }
+}
+
+// Exportação dos métodos
+module.exports = {
+  calcularMaoDeObra,
+  calcularTotal,
+  verificarDesconto
+};
+2. File: rec10_orcamento/app.js
+JavaScript
+// Arquivo principal
+const entrada = require("readline-sync");
+const funcoesOrcamento = require("./funcoesOrcamento");
+
+console.log("=== SISTEMA DE ORÇAMENTO TÉCNICO ===");
+
+// Entradas do usuário
+const nomeCliente = entrada.question("Digite o nome do cliente: ");
+const valorMateriais = entrada.questionFloat("Digite o valor dos materiais (R$): ");
+const horasServico = entrada.questionFloat("Digite a quantidade de horas de servico: ");
+
+// Processamento via módulo importado
+const valorMaoDeObra = funcoesOrcamento.calcularMaoDeObra(horasServico);
+const valorTotal = funcoesOrcamento.calcularTotal(valorMateriais, horasServico);
+const situacaoDesconto = funcoesOrcamento.verificarDesconto(valorTotal);
+
+// Relatório Final
+console.log("\n================ RESUMO DO ORÇAMENTO ================");
+console.log(`Cliente: ${nomeCliente}`);
+console.log(`Valor dos Materiais: R$ ${valorMateriais.toFixed(2)}`);
+console.log(`Mão de Obra (${horasServico}h): R$ ${valorMaoDeObra.toFixed(2)}`);
+console.log(`Valor Total: R$ ${valorTotal.toFixed(2)}`);
+console.log(`Situação: ${situacaoDesconto}`);
+console.log("=====================================================");
+📁 Estrutura Final de Pastas do Repositório
+Certifique-se de montar as pastas no repositório exatamente assim:
+
+Plaintext
+recuperacao_backend/
+├── rec01_producao.js
+├── rec02_materiais.js
+├── rec03_oleo.js
+├── rec04_vibracao.js
+├── rec05_ciclos.js
+├── rec06_media.js
+├── rec07_setores.js
+├── rec08_ferramentas.js
+├── rec09_aproveitamento.js
+└── rec10_orcamento/
+    ├── app.js
+    └── funcoesOrcamento.js
